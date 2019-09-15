@@ -1,8 +1,8 @@
 var authConfig = {
     "siteName": "GoIndex", // 网站名称
     "root_pass": "index",  // 根目录密码，优先于.password
-    "version" : "1.0.1", // 程序版本
-    "theme" : "material",
+    "version" : "1.0.6", // 程序版本
+    "theme" : "material", // material  classic 
     "client_id": "202264815644.apps.googleusercontent.com",
     "client_secret": "X4Z3ca8xfWDb1Voo-F9a7ZxJ",
     "refresh_token": "", // 授权 token
@@ -49,7 +49,7 @@ async function handleRequest(request) {
     if(path.substr(-1) == '/' || action != null){
       return new Response(html,{status:200,headers:{'Content-Type':'text/html; charset=utf-8'}});
     }else{
-      if(path.split('/').pop() == ".password"){
+      if(path.split('/').pop().toLowerCase() == ".password"){
          return new Response("",{status:404});
       }
       let file = await gd.file(path);
@@ -120,7 +120,7 @@ class googleDrive {
     async _file(path){
       let arr = path.split('/');
       let name = arr.pop();
-      name = decodeURIComponent(name);
+      name = decodeURIComponent(name).replace(/\'/g, "\\'");
       let dir = arr.join('/')+'/';
       console.log(name, dir);
       let parent = await this.findPathId(dir);
@@ -205,7 +205,7 @@ class googleDrive {
     }
 
     async _findDirId(parent, name){
-      name = decodeURIComponent(name);
+      name = decodeURIComponent(name).replace(/\'/g, "\\'");
       
       console.log("_findDirId",parent,name);
 
